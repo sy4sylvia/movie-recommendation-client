@@ -5,13 +5,14 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from "./routes/Home";
 
 import './index.css';
+import Login from "./routes/Login";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
     <BrowserRouter>
         <Routes>
-            <Route path='/' element={<Home />}></Route>
+            <Route path='/login' element={<Login />}></Route>
 
         </Routes>
     </BrowserRouter>

@@ -7,7 +7,6 @@ import BasicLayout from "./components/BasicLayout";
 function App() {
     return (
         <div className="App">
-            <BasicLayout />
             <Footer />
         </div>
     );
