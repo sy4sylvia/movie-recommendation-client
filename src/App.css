@@ -47,3 +47,15 @@
 .movie-list {
   margin-left: 3%;
 }
+
+.card-form-wrapper {
+  width: 50%;
+  text-align: center;
+  left: 25%;
+  right: 20%;
+  bottom: 20%;
+}
+
+.product-title {
+  padding-top: 8%;
+}

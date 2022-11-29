@@ -1,70 +1,83 @@
 import React from 'react';
-import { Button, Checkbox, Form, Input } from 'antd';
-
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Card } from 'antd';
+import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
 import 'antd/dist/antd.css';
-
+import '../App.css';
 
 const Login = () => {
-    const onFinish = (values) => {
-        console.log('Received values of form: ', values);
-    };
-    return (
-        <Form
-            name='normal_login'
-            className='login-form'
-            initialValues={{
-                remember: true,
-            }}
-            onFinish={onFinish}
-        >
-            <Form.Item
-                name='email'
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input your email',
-                    },
-                ]}
-            >
-                <Input
-                    prefix={<UserOutlined className='site-form-item-icon' />}
-                    placeholder='Email' />
-            </Form.Item>
-            <Form.Item
-                name='password'
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input your password',
-                    },
-                ]}
-            >
-                <Input
-                    prefix={<LockOutlined className='ite-form-item-icon' />}
-                    type='password'
-                    placeholder='Password'
-                />
-            </Form.Item>
-            <Form.Item>
-                <Form.Item name='remember' valuePropName='checked' noStyle>
-                    <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-                {/*TODO: change the href later*/}
-                <a className='login-form-forgot' href='http://localhost:3000/forgot-password'>
-                    Forgot password
-                </a>
-            </Form.Item>
+    const [form] = Form.useForm();
+    const navigate = useNavigate();
 
-            <Form.Item>
-                <Button type='primary' htmlType='submit' className='login-form-button'>
-                    Log in
-                </Button>
-                Or
-                <a href='http://localhost:3000/register'>register now!</a>
-            </Form.Item>
-        </Form>
+    const submitLoginForm = (values) => {
+        console.log(values);
+
+        axios.post('/login', values)
+            .then(function (response) {
+                console.log(response);
+                // response.data contains: customerId, firstName, lastName
+                if (response.status === 200) {
+                    navigate('/');
+                }
+            })
+            .catch(function (error) {
+                if (error.response.status === 401) {
+                    alert('Wrong password.');
+                } else {
+                    alert(error);
+                }
+            });
+    }
+
+    return (
+        <Card
+            className='card-form-wrapper'
+            title='Log In'
+        >
+            <Form
+                className='form-inside-card'
+                form={form}
+                layout='vertical'
+                onFinish={submitLoginForm}
+                initialValues={{
+                    modifier: 'public',
+                }}
+            >
+                <Form.Item
+                    label='Email'
+                    name='email'
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your email.'
+                        }
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label='Password'
+                    name='password'
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your password.'
+                        }
+                    ]}
+                >
+                    <Input.Password />
+                </Form.Item>
+
+                <Form.Item>
+                    <Button type='primary' htmlType='submit'>
+                        Log In
+                    </Button>
+                </Form.Item>
+
+            </Form>
+        </Card>
     );
 };
 
