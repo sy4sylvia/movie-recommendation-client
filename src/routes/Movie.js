@@ -57,7 +57,7 @@ const Movie = () => {
             >
                 <Col className="gutter-row" span={12}>
                     <div>
-                        <h3 style={contentStyle}>Movie Image</h3>
+                        <h3 style={contentStyle}>{movieName}</h3>
                     </div>
                 </Col>
                 <Col span={4}>
@@ -87,7 +87,7 @@ const Movie = () => {
 
                     <Divider />
 
-                    <Button type='primary' block onClick={handleSubmitRating}>
+                    <Button type='default' block onClick={handleSubmitRating}>
                         Submit Rating
                     </Button>
                     <Divider />
