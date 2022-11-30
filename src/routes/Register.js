@@ -15,25 +15,22 @@ const Register = () => {
 
         console.log(values);
 
-        axios.post('/login', values)
+        axios.post('/register', values)
             .then(function (response) {
                 console.log(response);
-
-                localStorage.setItem('customerId', response.data.customerId);
-                localStorage.setItem('firstName', response.data.firstName);
 
                 // response.data contains: customerId, firstName, lastName
 
                 // Store the bearer token in the local storage
-                localStorage.setItem('authorization', response.headers.authorization);
+                // localStorage.setItem('authorization', response.headers.authorization);
 
                 if (response.status === 200) {
-                    navigate('/');
+                    navigate('/movies');
                 }
             })
             .catch(function (error) {
                 if (error.response.status === 401) {
-                    alert('Wrong password or security answer.');
+                    alert('Wrong password.');
                 } else {
                     alert(error);
                 }

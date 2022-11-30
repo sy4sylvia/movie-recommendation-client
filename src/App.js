@@ -6,7 +6,11 @@ import {useNavigate} from 'react-router-dom';
 import Home from './routes/Home';
 import Register from './routes/Register';
 import Login from './routes/Login';
-import {ITEMS} from "./components/NavbarItems";
+import MoviesPage from './routes/MoviesPage';
+import Movie from './routes/Movie';
+import Test from './routes/Test';
+
+import {ITEMS} from './components/NavbarItems';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -66,6 +70,9 @@ function App() {
                                 <Route exact path={'/home'} element={<Home />} />
                                 <Route exact path = '/register' element={<Register />} />
                                 <Route exact path = '/login' element={<Login />} />
+                                <Route exact path = '/movies' element={<MoviesPage />} />
+                                <Route exact path = '/movie' element={<Movie />} />
+                                <Route exact path = '/test' element={<Test />} />
                             </Routes>
                         </div>
 
