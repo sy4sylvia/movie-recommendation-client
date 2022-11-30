@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
 
 import Home from './routes/Home';
 import Register from './routes/Register';
@@ -24,6 +25,21 @@ function App() {
             navigate('/login');
         } else if (e.key === 'view-movies') {
             navigate('/movies');
+        } else if (e.key === 'rate-movies') {
+            const randomMovieId = Math.floor(Math.random() * 10000) + 1
+            localStorage.setItem('movieId', randomMovieId.toString());
+            axios.get('/movie', {params: {movieId: randomMovieId.toString()}})
+                .then(function (response) {
+                    if (response.status === 200) {
+                        console.log(response.data);
+                        // stringify the object and store in the local storage
+                        localStorage.setItem('curMovie', JSON.stringify(response.data));
+                        navigate('/movie');
+                    } else {
+                        alert('Something went wrong, please return to home page');
+                        navigate('/');
+                    }
+                }).catch((error) => alert(error));
         }
     };
 
