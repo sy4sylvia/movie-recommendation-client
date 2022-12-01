@@ -1,22 +1,27 @@
 import React, {useState} from 'react';
 import {Typography, Button, Row, Col, Divider, Rate} from 'antd';
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
 import 'antd/dist/antd.css';
 
 const { Title } = Typography;
 
 const Movie = () => {
-    const [value, setValue] = useState(2.5);
+    const userId = localStorage.getItem('myUserId');
 
-    const movieId = localStorage.getItem('movieId');
+    const navigate = useNavigate();
+
+    // set the initial rating value to be 5 for better view effect
+    const [value, setValue] = useState(5);
+    // const movieId = localStorage.getItem('movieId');
     const curMovie = JSON.parse(localStorage.getItem('curMovie'));
 
-    // console.log('curmovie, ', curMovie);
     const movieName = curMovie.title;
     const movieGenres = curMovie.genres;
+    const movieYear = curMovie.year;
+    const movieId = curMovie.movieId
 
-    // TODO: change the movie image
     const contentStyle = {
         height: '240px',
         color: '#fff',
@@ -26,16 +31,16 @@ const Movie = () => {
     };
 
     const handleSubmitRating = () => {
-        // console.log(value);
-        // this value here is the rating for the movie
         let values = {'rating': value};
         values = Object.assign({'movieId': parseInt(movieId)}, values);
-        console.log(values);  // {movieId: '5', rating: 5}
+        values = Object.assign({'userId': parseInt(userId)}, values);
 
         axios.post('/rating', values).then(function (response) {
             console.log('response from the backend', response);
             if (response.status === 200) {
                 console.log(response.data);
+                navigate('/movies');
+
             } else {
                 alert('Missing info');
             }
@@ -57,30 +62,27 @@ const Movie = () => {
             >
                 <Col className="gutter-row" span={12}>
                     <div>
-                        <h3 style={contentStyle}>{movieName}</h3>
+                        <h3 style={contentStyle}>{movieId} {movieName}</h3>
                     </div>
                 </Col>
-                <Col span={4}>
-
-                </Col>
-                <Col className="gutter-row" span={8}>
+                <Col className="gutter-row" span={12}>
                     <div>
                         <Title level = {3} italic ={true}>
-                            {movieId} {movieName}
+                            {movieName}
                         </Title>
                     </div>
 
                     <Divider />
 
                     <div>
-                        <Title level = {3}>
-                            {movieGenres}
+                        <Title level = {4}>
+                            Genres: {movieGenres}
                         </Title>
+                        <Title level={5}>Year of Release: {movieYear}</Title>
                     </div>
 
                     <Rate
                         allowHalf
-                        defaultValue={2.5}
                         onChange={setValue}
                         value = {value}
                     />

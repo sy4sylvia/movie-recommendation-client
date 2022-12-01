@@ -9,7 +9,6 @@ import Register from './routes/Register';
 import Login from './routes/Login';
 import MoviesPage from './routes/MoviesPage';
 import Movie from './routes/Movie';
-import Test from './routes/Test';
 
 import {ITEMS} from './components/NavbarItems';
 
@@ -88,7 +87,6 @@ function App() {
                                 <Route exact path = '/login' element={<Login />} />
                                 <Route exact path = '/movies' element={<MoviesPage />} />
                                 <Route exact path = '/movie' element={<Movie />} />
-                                <Route exact path = '/test' element={<Test />} />
                             </Routes>
                         </div>
 

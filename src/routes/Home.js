@@ -14,6 +14,9 @@ const Home = () => {
     const [profile, setProfile] = useState(null);
     const [movies, setMovies] = useState(null);
 
+    const userId = localStorage.getItem('myUserId');
+    console.log(userId);
+
     const getProfile = () => {
         axios({
             method: 'GET',
@@ -32,18 +35,18 @@ const Home = () => {
 
     // TODO: post the id to the backend, and receive a response of the recommended movies
     const onSearch = (value) => {
-        axios.post('/user', {
+        axios.post('/user-recommendation', {
             userId: parseInt(value)
         }).then((response) => {
             // correspond to the parsed on line 73
             if (response.status === 200) {
                 setMovies(response.data);
-            } else if (response.status === 400) {
-                alert('Please input a valid user id');
             }
         }).catch((error) => {
-            if (error.response) {
-                console.log(error.response)
+            if (error.response.status === 400) {
+                alert('Please try a user id between 1 and 610 besides your user id.');
+            } else {
+                alert(error);
             }
         });
     }
@@ -63,9 +66,15 @@ const Home = () => {
             >
                 <Typography.Title>Welcome to Movie Recommendation System!</Typography.Title>
 
+                <Button onClick={getProfile}>Click me</Button> to Get Your User Id
+                {profile &&
+                    <div>
+                        <p> Your User Id: {userId}</p>
+                    </div>
+                }
                 <div className ='input-user-id-bar'>
                     <Search
-                        placeholder='Enter user ids to view different movie recommendation for them'
+                        placeholder='Enter user ids to view different movie recommendation'
                         enterButton='Get Recommendation'
                         onSearch={onSearch}
                         prefix={<UserOutlined className="site-form-item-icon" />}>
@@ -86,12 +95,6 @@ const Home = () => {
                                 </List.Item>
                             )}
                         />
-                    </div>
-                }
-                <Button onClick={getProfile}>Click me</Button> to Get Your User Id
-                {profile &&
-                    <div>
-                        <p>Profile name: {profile.profile_id}</p>
                     </div>
                 }
 
