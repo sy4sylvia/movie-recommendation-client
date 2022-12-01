@@ -16,6 +16,30 @@ const { Header, Content, Footer, Sider } = Layout;
 
 function App() {
     const navigate = useNavigate();
+    let randomMovieId = 51;
+    // invalid movie id in the database, get random movie id
+    if (randomMovieId === 51) {
+        axios.get('/movieIds')
+            .then(response => {
+                if (response.status === 200) {
+                    const movieIdList = response.data.movieIds;
+                    console.log(typeof movieIdList);
+                    randomMovieId = movieIdList[Math.floor(Math.random() * movieIdList.length)];
+                    localStorage.setItem('movieId', randomMovieId.toString());
+                    console.log(randomMovieId);
+                }
+
+            }).catch(error => {
+            if (error.response.status === 400) {
+                // a lot of missing data
+                alert('Something went wrong on our side, please try again.')
+            } else {
+                alert(error)
+            }
+        });
+    }
+
+
     const onClick = (e) => {
         console.log(e);
         if (e.key === 'register') {
@@ -25,8 +49,6 @@ function App() {
         } else if (e.key === 'view-movies') {
             navigate('/movies');
         } else if (e.key === 'rate-movies') {
-            const randomMovieId = Math.floor(Math.random() * 10000) + 1
-            localStorage.setItem('movieId', randomMovieId.toString());
             axios.get('/movie', {params: {movieId: randomMovieId.toString()}})
                 .then(function (response) {
                     if (response.status === 200) {
@@ -34,11 +56,15 @@ function App() {
                         // stringify the object and store in the local storage
                         localStorage.setItem('curMovie', JSON.stringify(response.data));
                         navigate('/movie');
-                    } else {
-                        alert('Something went wrong, please return to home page');
-                        navigate('/');
                     }
-                }).catch((error) => alert(error));
+                }).catch((error) => {
+                    if (error.response.status === 400) {
+                        // a lot of missing data
+                        alert('Something went wrong on our side, please try again.')
+                    } else {
+                        alert(error)
+                    }
+                });
         }
     };
 
