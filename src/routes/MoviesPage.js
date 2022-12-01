@@ -5,28 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
-//TODO: migrate to the MoviesPage after the function is complete
-
-const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-// const getItem = (text, value) => {
-//     return { text, value,};
-// }
-//
-// const furnitureChildren = [];
-// const officeChildren = [];
-// const techChildren = [];
-//
-// _.forEach(FURNITURE, function(obj) {
-//     furnitureChildren.push(getItem(obj.label, obj.key));
-// });
-//
-// _.forEach(OFFICE, function(obj) {
-//     officeChildren.push(getItem(obj.label, obj.key));
-// });
-//
-// _.forEach(TECHNOLOGY, function(obj) {
-//     techChildren.push(getItem(obj.label, obj.key));
-// });
+//TODO: work on the filters later?
 
 const columns = [
     {
@@ -86,13 +65,9 @@ const MoviesPage = () => {
 
     const fetchMovies = () => {
         setLoading(true);
-        axios.get('/movies',{headers: headers})
+        axios.get('/movies')
             .then(function (response) {
-                // console.log(JSON.parse())
-                // console.log('response data on the movies page axios', response.data);
-                console.log(typeof response.data);  // still get the string here
                 console.log(response.data);
-
                 if (response.status === 200) {
                     setData(response.data.movies);
                     setLoading(false);
@@ -122,15 +97,17 @@ const MoviesPage = () => {
         axios.get('/movie', {params: {movieId: movieId}})
             .then(function (response) {
                 if (response.status === 200) {
-                    console.log(response);
                     // stringify the object and store in the local storage
                     localStorage.setItem('curMovie', JSON.stringify(response.data));
                     navigate('/movie');
-                } else {
-                    alert('Ha?');
-                    navigate('/');
                 }
-            }).catch((error) => alert(error));
+            }).catch((error) => {
+                if (error.response.status === 400) {
+                    alert('Movie not found.');
+                } else {
+                    alert(error);
+                }
+        });
     };
 
     const handleTableChange = (pagination, filters, sorter) => {
