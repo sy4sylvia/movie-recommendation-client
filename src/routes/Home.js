@@ -62,7 +62,9 @@ const Home = () => {
                     minHeight: 360,
                 }}
             >
-                <Typography.Title>Welcome to Movie Recommendation System!</Typography.Title>
+                <Typography.Title style={{margin: '7%'}}>
+                    Welcome to Movie Recommendation System!
+                </Typography.Title>
 
                 <Button onClick={getProfile}>Click me</Button> to Get Your User Id
                 {profile &&
@@ -72,7 +74,7 @@ const Home = () => {
                 }
                 <div className ='input-user-id-bar'>
                     <Search
-                        placeholder='Enter user ids to view different movie recommendation'
+                        placeholder='Enter a user id between 1 and 610 to view the movie recommendation'
                         enterButton='Get Recommendation'
                         onSearch={onSearch}
                         prefix={<UserOutlined className="site-form-item-icon" />}>

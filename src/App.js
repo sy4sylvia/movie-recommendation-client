@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { Button, Layout, Menu } from 'antd';
+import { Layout, Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -97,12 +97,11 @@ function App() {
                     <Header
                         className="site-layout-sub-header-background"
                     >
-                        <Button
-                            onClick={() => navigate('/')}
-                            block
+                        <a className={'navbar-title'}
+                           onClick={() => navigate('/')}
                         >
                             Popcorn Movie Recommendation System
-                        </Button>
+                        </a>
 
                     </Header>
                     <Content
