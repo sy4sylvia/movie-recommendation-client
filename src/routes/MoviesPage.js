@@ -1,132 +1,172 @@
-import React, {useState} from 'react';
-import { LikeOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons';
-import {Avatar, Button, List, Rate, Space, Typography} from 'antd';
+import React, { useEffect, useState } from 'react';
+import {Table, Typography} from 'antd';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-// TODO: data here should be GET from the backend
+const { Title } = Typography;
 
-const data = Array.from({length: 23,}).map((_, i) => ({
-    id: i,
-    rating: 0,
-    href: 'https://ant.design',
-    title: `ant design part ${i}`,
-    avatar: 'https://joeschmoe.io/api/v1/random',
-    description:
-        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-}));
-const IconText = ({ icon, text }) => (
-    <Space>
-        {React.createElement(icon)}
-        {text}
-    </Space>
-);
+//TODO: migrate to the MoviesPage after the function is complete
+
+const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+// const getItem = (text, value) => {
+//     return { text, value,};
+// }
+//
+// const furnitureChildren = [];
+// const officeChildren = [];
+// const techChildren = [];
+//
+// _.forEach(FURNITURE, function(obj) {
+//     furnitureChildren.push(getItem(obj.label, obj.key));
+// });
+//
+// _.forEach(OFFICE, function(obj) {
+//     officeChildren.push(getItem(obj.label, obj.key));
+// });
+//
+// _.forEach(TECHNOLOGY, function(obj) {
+//     techChildren.push(getItem(obj.label, obj.key));
+// });
+
+const columns = [
+    {
+        title: 'Movie Name',
+        dataIndex: 'title',
+        render: (text) => <a onClick={() => console.log('clicked')}>{text}</a>,
+        sorter: (a, b) => a.title.length - b.title.length,
+    },
+    {
+        title: 'Genres',
+        dataIndex: 'genres',
+        filters: [
+            {
+                text: 'Furniture',
+                value: 'Furniture',
+                // children: furnitureChildren
+            },
+            {
+                text: 'Office',
+                value: 'office',
+                // children: officeChildren
+            },
+            {
+                text: 'Technology',
+                value: 'technology',
+                // children: techChildren
+            },
+        ],
+        onFilter: (value, record) => {
+            // Filter on the three categories
+            if (value === 'Furniture' || value === 'Office' || value === 'Technology') {
+                console.log('record category', record.category);
+                return record.category.indexOf(value) === 0;
+            } else {
+                return record.genres.indexOf(value) === 0;
+            }
+        }
+    },
+    {
+        title: 'Year',
+        dataIndex: 'year',
+        sorter: (a, b) => a.year - b.year,
+    },
+];
 
 const MoviesPage = () => {
+    const navigate = useNavigate();
 
-    // const totalNum = data.length;
-
-    const [value, setValue] = useState(2.5);
-
-    // const [movies, setMovies] = useState(null);
-    const allMovies = [];
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
+    const [data, setData] = useState();
+    const [loading, setLoading] = useState(false);
+    const [tableParams, setTableParams] = useState({
+        pagination: {
+            current: 1,
+            pageSize: 10,
         },
-        data: {},
+    });
+
+    const fetchMovies = () => {
+        setLoading(true);
+        axios.get('/movies',{headers: headers})
+            .then(function (response) {
+                // console.log(JSON.parse())
+                // console.log('response data on the movies page axios', response.data);
+                console.log(typeof response.data);  // still get the string here
+                console.log(response.data);
+
+                if (response.status === 200) {
+                    setData(response.data.movies);
+                    setLoading(false);
+                    setTableParams({
+                        ...tableParams,
+                        pagination: {
+                            ...tableParams.pagination,
+                            total: response.data.length, // total count before the filter
+                        },
+                    });
+                    //refresh the page if already at the /results
+                    // navigate('/movies');
+                    // window.location.reload();
+                } else {
+                    alert('Please log in before you search for a product.');
+                    navigate('/login');
+                }
+            }).catch((error) => alert(error));
     };
 
-    const getAllMovies = () => {
-        axios.get('/movies')
-            .then((response) => {
-                // TODO: json object instead of string here
-                console.log(response.data);
-                console.log(typeof response.data);
-            // const responseData = response.data;
-            //     console.log(response.data);
-            //
-            //     const tmp = JSON.parse(JSON.stringify(response.data));
-            //     console.log(tmp);
-            //     console.log('tmp,', typeof tmp);
-            //     const tmpParsed = JSON.parse(tmp);
-            //     console.log('tmpParsed, ', typeof tmpParsed);
-            // console.log(response);
-            // console.log(typeof response.data);
+    useEffect(() => {
+        fetchMovies();
+    }, [JSON.stringify(tableParams)]);
 
-            // const curMovie = {
-            //     href: 'https://ant.design',
-            //     title: `ant design part ${i}`,
-            //     avatar: 'https://joeschmoe.io/api/v1/random',
-            //     description:
-            //         'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-            //     content: {response.data.}
-            // }
-            // setProfile({
-            //     profile_id: responseData.id
-            // })
-        }).catch((error) => {
-            if (error.response) {
-                console.log(error.response)
-            }
-        })
-    }
+    const fetchSingleMovie = (movieId) => {
+        localStorage.setItem('movieId', movieId);
+        axios.get('/movie', {params: {movieId: movieId}})
+            .then(function (response) {
+                if (response.status === 200) {
+                    console.log(response);
+                    // stringify the object and store in the local storage
+                    localStorage.setItem('curMovie', JSON.stringify(response.data));
+                    navigate('/movie');
+                } else {
+                    alert('Ha?');
+                    navigate('/');
+                }
+            }).catch((error) => alert(error));
+    };
+
+    const handleTableChange = (pagination, filters, sorter) => {
+        setTableParams({
+            pagination,
+            filters,
+            ...sorter,
+        });
+    };
 
     return (
         <div>
-            <Button onClick={getAllMovies}>Click me</Button>
-            {allMovies}
-            <List
-                itemLayout="vertical"
-                size="large"
-                pagination={{
-                    onChange: (page) => {
-                        console.log(page);
-                    },
-                    pageSize: 3,
+            <Title
+                style={{
+                    marginTop: '36px',
                 }}
+            >
+                Movies
+            </Title>
+            <Table
+                columns={columns}
                 dataSource={data}
-                renderItem={(item) => {
-                    // TODO: send back the rating, movieId to the backend
-                    return (
-                        <List.Item
-                            key={item.title}
-                            actions={[
-                                <IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
-                                <IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
-                                <IconText icon={MessageOutlined} text="72" key="list-vertical-message" />,
-                            ]}
-                        >
-                            <List.Item.Meta
-                                avatar={<Avatar src={item.avatar} />}
-                                title={<a href={item.href}>{item.title}</a>}
-                                description={item.description}
-                            />
-                            {item.content}
-
-                            <Typography.Paragraph>
-                                //TODO: direct to a new page for separate rating with more movie info
-                                Rating: {item.rating}
-                                <Rate
-                                    allowHalf
-                                    defaultValue={2.5}
-                                    onChange = {(value) => {
-                                        setValue(value);
-                                        item.rating = value;
-                                        console.log(item.id, item.rating);
-                                    }}
-                                    // onChange={setValue}
-                                    value = {value}
-                                    // style ={{borderBottom: 'solid'}}
-                                />
-                            </Typography.Paragraph>
-
-                        </List.Item>
-                    )
+                pagination={tableParams.pagination}
+                loading={loading}
+                onChange={handleTableChange}
+                onRow={(record) => {
+                    return {
+                        // click row
+                        onClick: () => {
+                            console.log(record.movieId);
+                            fetchSingleMovie(record.movieId);
+                        },
+                    };
                 }}
             />
         </div>
-    );
-}
+    )
+};
 export default MoviesPage;

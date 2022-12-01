@@ -5,10 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
-//
-// const searchURL = 'http://localhost:8080/api/product/search';
-// const productURL = 'http://localhost:8080/api/product/';
+//TODO: migrate to the MoviesPage after the function is complete
 
+const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
 // const getItem = (text, value) => {
 //     return { text, value,};
 // }
@@ -99,7 +98,9 @@ const Test = () => {
     const fetchMovies = () => {
         console.log('called');
         setLoading(true);
-        axios.get('/movies', {params: {q: searchText}})
+        axios.get('/movies',{
+            headers: headers
+        })
             .then(function (response) {
                 const dummy = {
                     "movieId": 5,
@@ -116,7 +117,7 @@ const Test = () => {
 
                 // console.log(JSON.parse())
                 // console.log('response data on the movies page axios', response.data);
-                console.log(typeof response.data);
+                console.log(typeof response.data);  // still get the string here
                 console.log(response.data);
                 // console.log(JSON.parse(response.data));
                 //

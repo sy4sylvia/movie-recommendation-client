@@ -17,15 +17,11 @@ const Register = () => {
 
         axios.post('/register', values)
             .then(function (response) {
-                console.log(response);
-
-                // response.data contains: customerId, firstName, lastName
-
-                // Store the bearer token in the local storage
-                // localStorage.setItem('authorization', response.headers.authorization);
-
+                console.log(response.data);
                 if (response.status === 200) {
-                    navigate('/movies');
+                    const myUserId = response.data.userId;
+                    localStorage.setItem('myUserId', myUserId);
+                    navigate('/login');
                 }
             })
             .catch(function (error) {

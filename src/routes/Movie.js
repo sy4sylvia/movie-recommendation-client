@@ -29,7 +29,7 @@ const Movie = () => {
         // console.log(value);
         // this value here is the rating for the movie
         let values = {'rating': value};
-        values = Object.assign({'movieId': movieId}, values);
+        values = Object.assign({'movieId': parseInt(movieId)}, values);
         console.log(values);  // {movieId: '5', rating: 5}
 
         axios.post('/rating', values).then(function (response) {
