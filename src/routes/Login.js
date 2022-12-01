@@ -15,15 +15,20 @@ const Login = () => {
 
         axios.post('/login', values)
             .then(function (response) {
-                console.log(response);
-                // response.data contains: customerId, firstName, lastName
+                console.log(response.data);
+                const myUserId = response.data.userId;
+                localStorage.setItem('myUserId', myUserId);
+
                 if (response.status === 200) {
-                    navigate('/');
+                    // go to the movies page to select multiple movies to submit rating
+                    navigate('/movies');
                 }
             })
             .catch(function (error) {
-                if (error.response.status === 401) {
-                    alert('Wrong password.');
+                if (error.response.status === 400) {
+                    alert('User not found, please register first.');
+                } else if (error.response.status === 401) {
+                    alert('Wrong password, please input your password again.');
                 } else {
                     alert(error);
                 }
