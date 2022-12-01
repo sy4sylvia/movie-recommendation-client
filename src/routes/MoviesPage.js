@@ -5,44 +5,17 @@ import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
-//TODO: work on the filters later?
-
 const columns = [
     {
         title: 'Movie Name',
         dataIndex: 'title',
         render: (text) => <a onClick={() => console.log('clicked')}>{text}</a>,
-        sorter: (a, b) => a.title.length - b.title.length,
+        sorter: (a, b) => a.title.localeCompare(b.title),
     },
     {
         title: 'Genres',
         dataIndex: 'genres',
-        filters: [
-            {
-                text: 'Furniture',
-                value: 'Furniture',
-                // children: furnitureChildren
-            },
-            {
-                text: 'Office',
-                value: 'office',
-                // children: officeChildren
-            },
-            {
-                text: 'Technology',
-                value: 'technology',
-                // children: techChildren
-            },
-        ],
-        onFilter: (value, record) => {
-            // Filter on the three categories
-            if (value === 'Furniture' || value === 'Office' || value === 'Technology') {
-                console.log('record category', record.category);
-                return record.category.indexOf(value) === 0;
-            } else {
-                return record.genres.indexOf(value) === 0;
-            }
-        }
+        sorter: (a, b) => a.genres.localeCompare(b.genres),
     },
     {
         title: 'Year',
