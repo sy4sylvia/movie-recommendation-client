@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { Layout, Menu } from 'antd';
-import {useNavigate} from 'react-router-dom';
+import { Button, Layout, Menu } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import Home from './routes/Home';
@@ -65,6 +65,9 @@ function App() {
                         alert(error)
                     }
                 });
+        } else if (e.key === 'logout') {
+            localStorage.clear();
+            navigate('/login');
         }
     };
 
@@ -93,12 +96,14 @@ function App() {
                 <Layout>
                     <Header
                         className="site-layout-sub-header-background"
-                        style={{
-                            color: 'white',
-                            padding: 0,
-                        }}
                     >
-                        Popcorn Movie Recommendation System
+                        <Button
+                            onClick={() => navigate('/')}
+                            block
+                        >
+                            Popcorn Movie Recommendation System
+                        </Button>
+
                     </Header>
                     <Content
                         style={{

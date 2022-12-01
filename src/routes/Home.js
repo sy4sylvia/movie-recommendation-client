@@ -33,12 +33,10 @@ const Home = () => {
         })
     }
 
-    // TODO: post the id to the backend, and receive a response of the recommended movies
     const onSearch = (value) => {
         axios.post('/user-recommendation', {
             userId: parseInt(value)
         }).then((response) => {
-            // correspond to the parsed on line 73
             if (response.status === 200) {
                 setMovies(response.data);
             }
@@ -89,7 +87,7 @@ const Home = () => {
                             renderItem={(item) => (
                                 <List.Item>
                                     <List.Item.Meta
-                                        title={<a href="https://ant.design">{item.title}</a>}
+                                        title={item.title}
                                         description={item.genres}
                                     />
                                 </List.Item>
