@@ -25,8 +25,8 @@ const Register = () => {
                 }
             })
             .catch(function (error) {
-                if (error.response.status === 401) {
-                    alert('Wrong password.');
+                if (error.response.status === 400) {
+                    alert('This user is already registered.');
                 } else {
                     alert(error);
                 }
